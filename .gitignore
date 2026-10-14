@@ -1,0 +1,17 @@
+# Django
+db.sqlite3
+*.log
+
+# Python
+venv/
+env/
+.env
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# VS Code
+.vscode/
+
+# Static files gathered for production
+staticfiles/

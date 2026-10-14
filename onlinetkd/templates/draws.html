@@ -1,0 +1,290 @@
+{% extends 'base.html' %}
+{% block content %}
+
+{% if all_draws %}
+{% for draw in all_draws %}
+<div class="draw-block">
+    <h2 class="draw-title">{{ draw.title }}</h2>
+
+    <div class="bracket-wrapper">
+        <div class="bracket">
+
+            <!-- LEFT HALF -->
+            <div class="half left-half">
+                <div class="round-col">
+                    <div class="round-label">{{ draw.first_round_name }}</div>
+                    <div class="round-matches">
+                        {% for match in draw.left_matches %}
+                        <div class="match-pair">
+                            <div class="athlete {% if not match.c1 %}bye{% endif %}">
+                                {% if match.c1 %}
+                                <span class="name">{{ match.c1.full_name }}{% if match.c1.is_seeded %}<span
+                                        class="seed">(S)</span>{% endif %}</span>
+                                <span class="school">{{ match.c1.short_school }}</span>
+                                {% else %}<span class="tbd">BYE</span>{% endif %}
+                            </div>
+                            <div class="athlete {% if not match.c2 %}bye{% endif %}">
+                                {% if match.c2 %}
+                                <span class="name">{{ match.c2.full_name }}{% if match.c2.is_seeded %}<span
+                                        class="seed">(S)</span>{% endif %}</span>
+                                <span class="school">{{ match.c2.short_school }}</span>
+                                {% else %}<span class="tbd">BYE</span>{% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- CENTER: FINAL -->
+            <div class="final-col">
+                <div class="round-label">FINAL</div>
+                <div class="match-pair final-match">
+                    <div class="athlete">
+                        {% if draw.final.c1 %}
+                        <span class="name">{{ draw.final.c1.full_name }}{% if draw.final.c1.is_seeded %}<span
+                                class="seed">(S)</span>{% endif %}</span>
+                        <span class="school">{{ draw.final.c1.short_school }}</span>
+                        {% else %}<span class="tbd">—</span>{% endif %}
+                    </div>
+                    <div class="athlete">
+                        {% if draw.final.c2 %}
+                        <span class="name">{{ draw.final.c2.full_name }}{% if draw.final.c2.is_seeded %}<span
+                                class="seed">(S)</span>{% endif %}</span>
+                        <span class="school">{{ draw.final.c2.short_school }}</span>
+                        {% else %}<span class="tbd">—</span>{% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT HALF -->
+            <div class="half right-half">
+                <div class="round-col">
+                    <div class="round-label">{{ draw.first_round_name }}</div>
+                    <div class="round-matches">
+                        {% for match in draw.right_matches %}
+                        <div class="match-pair">
+                            <div class="athlete {% if not match.c1 %}bye{% endif %}">
+                                {% if match.c1 %}
+                                <span class="school">{{ match.c1.short_school }}</span>
+                                <span class="name">{{ match.c1.full_name }}{% if match.c1.is_seeded %}<span
+                                        class="seed">(S)</span>{% endif %}</span>
+                                {% else %}<span class="tbd">BYE</span>{% endif %}
+                            </div>
+                            <div class="athlete {% if not match.c2 %}bye{% endif %}">
+                                {% if match.c2 %}
+                                <span class="school">{{ match.c2.short_school }}</span>
+                                <span class="name">{{ match.c2.full_name }}{% if match.c2.is_seeded %}<span
+                                        class="seed">(S)</span>{% endif %}</span>
+                                {% else %}<span class="tbd">BYE</span>{% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p>No draws yet. Register athletes to generate them.</p>
+        {% endif %}
+
+
+        <style>
+            .draw-block {
+                background: rgba(255, 255, 255, 0.97);
+                border-radius: 8px;
+                padding: 20px;
+                margin-bottom: 30px;
+                color: #000;
+            }
+
+            .draw-title {
+                text-align: center;
+                color: #b30000;
+                border-bottom: 2px solid #b30000;
+                padding-bottom: 8px;
+                margin-top: 0;
+                letter-spacing: 2px;
+                font-size: 22px;
+            }
+
+
+            .bracket-wrapper {
+                overflow-x: auto;
+                padding: 10px 0;
+            }
+
+            .bracket {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 40px;
+                min-width: max-content;
+                padding: 10px;
+            }
+
+            .half {
+                display: flex;
+                gap: 40px;
+            }
+
+            .right-half {
+                flex-direction: row;
+            }
+
+
+            .round-col {
+                display: flex;
+                flex-direction: column;
+                min-width: 190px;
+            }
+
+            .round-label {
+                text-align: center;
+                font-weight: bold;
+                font-size: 12px;
+                color: #b30000;
+                margin-bottom: 8px;
+                letter-spacing: 1px;
+            }
+
+            .round-matches {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-around;
+                flex: 1;
+                gap: 12px;
+            }
+
+
+            .match-pair {
+                position: relative;
+                border: 1px solid #999;
+                border-radius: 4px;
+                background: #fff;
+                overflow: visible;
+            }
+
+
+            .left-half .match-pair::after {
+                content: "";
+                position: absolute;
+                top: 50%;
+                right: -20px;
+                width: 20px;
+                height: 2px;
+                background: #999;
+            }
+
+            .left-half .round-col:not(:last-child) .round-matches {
+                position: relative;
+            }
+
+            .left-half .round-col:not(:last-child) .round-matches::after {
+                content: "";
+                position: absolute;
+                right: -20px;
+                top: 25%;
+                bottom: 25%;
+                width: 2px;
+                background: #999;
+            }
+
+
+            .right-half .match-pair::before {
+                content: "";
+                position: absolute;
+                top: 50%;
+                left: -20px;
+                width: 20px;
+                height: 2px;
+                background: #999;
+            }
+
+            .right-half .round-col:not(:first-child) .round-matches::before {
+                content: "";
+                position: absolute;
+                left: -20px;
+                top: 25%;
+                bottom: 25%;
+                width: 2px;
+                background: #999;
+            }
+
+
+            .athlete {
+                padding: 6px 10px;
+                font-size: 13px;
+                border-bottom: 1px solid #eee;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 8px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .athlete:last-child {
+                border-bottom: none;
+            }
+
+            .athlete.bye {
+                color: #aaa;
+                font-style: italic;
+                background: #f8f8f8;
+            }
+
+            .athlete .name {
+                flex: 1;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .athlete .school {
+                font-weight: bold;
+                color: #b30000;
+                font-size: 11px;
+                background: #fdecec;
+                padding: 2px 5px;
+                border-radius: 3px;
+            }
+
+            .athlete .seed {
+                color: #b30000;
+                font-weight: bold;
+                margin-left: 3px;
+            }
+
+            .athlete .tbd {
+                color: #bbb;
+                font-style: italic;
+            }
+
+
+            .final-col {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                min-width: 220px;
+            }
+
+            .final-match {
+                border: 2px solid #b30000;
+                box-shadow: 0 0 12px rgba(179, 0, 0, 0.35);
+                background: #fffaf0;
+                padding: 4px 0;
+            }
+
+            .final-match .athlete {
+                font-size: 14px;
+                padding: 8px 12px;
+            }
+
+            .final-match .athlete .name {
+                font-weight: bold;
+            }
+        </style>
+
+        {% endblock %}

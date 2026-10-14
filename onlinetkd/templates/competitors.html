@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Registered Competitor</h2>
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Seed</th>
+        <th>Reg No</th>
+        <th>Gender</th>
+        <th>Weight</th>
+        <th>School</th>
+        <th>Phone</th>
+    </tr>
+    {% for c in competitors %}
+    <tr>
+        <td>{{ c.full_name }}</td>
+        <td>{% if c.is_seeded %}<span class="seed">S</span>{% endif %}</td>
+        <td>{{ c.reg_no }}</td>
+        <td>{{ c.get_gender_display }}</td>
+        <td>{{ c.get_weight_category_display }}</td>
+        <td>{{ c.school }}</td>
+        <td>{{ c.phone }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="7">No competitors registered yet.</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
