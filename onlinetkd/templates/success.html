@@ -1,12 +1,19 @@
 {% extends 'base.html' %}
 {% block content %}
+
 <div class="success-box">
     <div class="tick">✅</div>
-    <h2>Registration Succesful!</h2>
-    <p>The athlete has been added and the draw has been updated.</p>
-    <a href="/competitors/">View competitors</a>
-    <a href="/draws/">View draws</a>
-    <a href="/register/">Register Another</a>
+    <h2>Registration Successful!</h2>
+    <p>The athlete has been added to the championship.</p>
+
+    <div class="success-links">
+        <a href="/register/">Register Another Athlete</a>
+        <a href="/competitors/">View Competitors</a>
+    </div>
+
+    <div class="draw-notice">
+        <strong>The draws will be displayed on competition day.</strong>
+    </div>
 </div>
 
 {% endblock %}

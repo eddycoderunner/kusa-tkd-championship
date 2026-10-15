@@ -1,0 +1,81 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<h1 style="color:#000;">Tournament Bracket</h1>
+
+{% if all_draws %}
+{% for draw in all_draws %}
+<div style="background:#fff;padding:15px;margin-bottom:20px;border:1px solid #ccc;border-radius:6px;">
+    <h2 style="color:#b30000;text-align:center;border-bottom:2px solid #b30000;padding-bottom:8px;">
+        {{ draw.title }}
+    </h2>
+
+    <div style="display:flex;justify-content:space-between;gap:20px;overflow-x:auto;padding:10px 0;">
+
+        <div style="min-width:220px;">
+            <div style="text-align:center;font-weight:bold;color:#b30000;margin-bottom:8px;">
+                {{ draw.first_round_name }}
+            </div>
+            {% for match in draw.left_matches %}
+            <div style="border:1px solid #999;border-radius:4px;margin:4px 0;background:#fff;">
+                <div style="padding:6px 10px;border-bottom:1px solid #eee;font-size:13px;color:#000;">
+                    {% if match.c1 %}{{ match.c1.full_name }} ({{ match.c1.short_school }}){% else %}BYE{% endif %}
+                </div>
+                <div style="padding:6px 10px;font-size:13px;color:#000;">
+                    {% if match.c2 %}{{ match.c2.full_name }} ({{ match.c2.short_school }}){% else %}BYE{% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div style="display:flex;flex-direction:column;justify-content:center;min-width:220px;">
+            <div style="text-align:center;font-weight:bold;color:#b30000;margin-bottom:8px;">FINAL</div>
+            <div style="border:2px solid #b30000;border-radius:4px;background:#fffaf0;padding:6px 0;">
+                <div style="padding:8px 12px;border-bottom:1px solid #eee;font-size:14px;color:#000;">TBD</div>
+                <div style="padding:8px 12px;font-size:14px;color:#000;">TBD</div>
+            </div>
+        </div>
+
+        <div style="min-width:220px;">
+            <div style="text-align:center;font-weight:bold;color:#b30000;margin-bottom:8px;">
+                {{ draw.first_round_name }}
+            </div>
+            {% for match in draw.right_matches %}
+            <div style="border:1px solid #999;border-radius:4px;margin:4px 0;background:#fff;">
+                <div style="padding:6px 10px;border-bottom:1px solid #eee;font-size:13px;color:#000;">
+                    {% if match.c1 %}({{ match.c1.short_school }}) {{ match.c1.full_name }}{% else %}BYE{% endif %}
+                </div>
+                <div style="padding:6px 10px;font-size:13px;color:#000;">
+                    {% if match.c2 %}({{ match.c2.short_school }}) {{ match.c2.full_name }}{% else %}BYE{% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+</div>
+{% endfor %}
+{% else %}
+<p style="color:#000;">No draws yet. Register athletes to generate them.</p>
+{% endif %}
+
+<p style="margin-top:20px;">
+    <a href="{% url 'admin:onlinetkd_drawentry_changelist' %}" class="button">Back to draw entries</a>
+    <button onclick="window.print()" class="button" style="margin-left:10px;">Print / Save as PDF</button>
+</p>
+
+<style>
+    @media print {
+        body {
+            background: #fff !important;
+        }
+
+        .breadcrumbs,
+        #header,
+        .module,
+        .button {
+            display: none !important;
+        }
+    }
+</style>
+{% endblock %}

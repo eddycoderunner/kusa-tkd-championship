@@ -30,23 +30,28 @@ def competitors_list(request):
     return render(request, 'competitors.html', {'competitors': competitors})
 
 def draws_view(request):
-    """Render the mirrored bracket for each category."""
-    all_draws = _build_draw_tree()
-    return render(request, 'draws.html', {'all_draws': all_draws})
-
-
+    """Hide the draw from the public until competition day."""
+    return render(request, 'draws.html', {'hidden': True})
 
 def _build_draw_tree():
     """
     Group DrawEntry rows into a mirrored bracket structure.
 
-    For now, only the FIRST round contains athletes. Later rounds are
-    empty placeholders we skip in the output. The template renders only
-    the populated first round + an empty Final.
+    Returns a list like:
+    [
+      {
+        'title': 'MALE FEATHER',
+        'first_round_name': 'QF',
+        'left_matches': [ {number, c1, c2}, ... ],
+        'right_matches': [ {number, c1, c2}, ... ],
+        'final': {'c1': None, 'c2': None},
+      },
+      ...
+    ]
     """
-
     from collections import defaultdict
 
+    # Group: { (gender, weight): { round: { match_num: {slot: competitor} } } }
     raw = defaultdict(lambda: defaultdict(lambda: defaultdict(dict)))
     for e in DrawEntry.objects.select_related('competitor').all():
         raw[(e.gender, e.weight_category)][e.round_name][e.match_number][e.slot] = e.competitor
@@ -58,13 +63,18 @@ def _build_draw_tree():
         gender_display = dict(Competitor.GENDER_CHOICES).get(gender, gender).upper()
         title = f"{gender_display} {weight.upper()}"
 
-        round_names = sorted(rounds_dict.keys(), key=lambda r: order.index(r) if r in order else 99)
-
+        # Sort rounds: first round is the biggest (R16, then QF, SF, F)
+        round_names = sorted(
+            rounds_dict.keys(),
+            key=lambda r: order.index(r) if r in order else 99
+        )
         first_round_name = round_names[0]
         first_round = rounds_dict[first_round_name]
         sorted_match_nums = sorted(first_round.keys())
 
-        half = len(sorted_match_nums) // 2
+        # Split into left/right halves — ceil for left, floor for right
+        from math import ceil
+        half = ceil(len(sorted_match_nums) / 2)
         left_nums = sorted_match_nums[:half]
         right_nums = sorted_match_nums[half:]
 
@@ -75,13 +85,9 @@ def _build_draw_tree():
         left_matches = [match_obj(m) for m in left_nums]
         right_matches = [match_obj(m) for m in right_nums]
 
-
-        left_rounds = []
-        right_rounds = []
-
         all_draws.append({
             'title': title,
-            'first_rond_name': first_round_name,
+            'first_round_name': first_round_name,
             'left_matches': left_matches,
             'right_matches': right_matches,
             'final': {'c1': None, 'c2': None},

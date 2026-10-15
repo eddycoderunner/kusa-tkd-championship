@@ -1,4 +1,19 @@
 from django.db import models
+from django.core.validators import RegexValidator
+
+
+
+name_validator = RegexValidator(
+    regex=r'^[A-Za-z\s]+$',
+    message='Name can only contain letters and spaces.'
+)
+
+phone_validator = RegexValidator(
+    regex=r'^\d{10}$',
+    message='Phone must be exactly 10 digits.'
+)
+
+
 
 class Competitor(models.Model):
     GENDER_CHOICES = [('M', 'Male'), ('F', 'Female')]
@@ -20,15 +35,25 @@ class Competitor(models.Model):
         ('SPU', 'SPU'),
     ]
 
-    full_name = models.CharField(max_length=255)
-    reg_no = models.CharField(max_length=50, unique=True)
+    full_name = models.CharField(
+        max_length=255,
+        validators=[name_validator]
+    )
+    reg_no = models.CharField(max_length=15, unique=True)
     weight_category = models.CharField(max_length=10, choices=WEIGHT_CHOICES)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
     school = models.CharField(max_length=10, choices=SCHOOL_CHOICES)
-    phone = models.CharField(max_length=15)
-    is_seeded = models.BooleanField(default=False)
+    phone = models.CharField(
+        max_length=10,
+        validators=[phone_validator]
+    )
+    is_seeded = models.BooleanField(
+        default=False,
+        verbose_name="Is black belt",
+        help_text="Mark this if the athlete is a black belt."
+    )
 
-    class  Meta:
+    class Meta:
         ordering = ['weight_category', 'gender', 'full_name']
 
     def __str__(self):
@@ -37,11 +62,10 @@ class Competitor(models.Model):
 
     @property
     def short_school(self):
-        """Return the school code (already short, no truncation)."""
-        return self.school if self.school else "___"
+        return self.school if self.school else "---"
+
 
 class DrawEntry(models.Model):
-    """One slot in a generated bracket for a given (gender, weight) category."""
     gender = models.CharField(max_length=1, choices=Competitor.GENDER_CHOICES)
     weight_category = models.CharField(max_length=10, choices=Competitor.WEIGHT_CHOICES)
     round_name = models.CharField(max_length=10)
@@ -49,8 +73,11 @@ class DrawEntry(models.Model):
     slot = models.IntegerField()
     side = models.CharField(max_length=5, default='L')
     competitor = models.ForeignKey(
-        Competitor, on_delete=models.CASCADE,
-        null=True, blank=True, related_name='draw_entries'
+        Competitor,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='draw_entries'
     )
 
     class Meta:
@@ -60,4 +87,3 @@ class DrawEntry(models.Model):
     def __str__(self):
         c = self.competitor.full_name if self.competitor else "BYE"
         return f"{self.gender}/{self.weight_category}/{self.round_name}/M{self.match_number}/S{self.slot}: {c}"
-        
