@@ -186,6 +186,90 @@
         .success-box a:hover {
             background-color: #8a0000;
         }
+
+        @media (max-width: 700px) {
+            .container {
+                max-width: 100%;
+                margin: 10px;
+                padding: 15px;
+                border-radius: 6px;
+            }
+
+            h1 {
+                font-size: 18px;
+                line-height: 15px;
+            }
+
+            .nav {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+
+            .nav a {
+                margin-right: 0;
+                font-size: 13px;
+                padding: 5px 10px;
+            }
+
+            form input[type="number"],
+            form input[type="tel"],
+            form input[type="email"],
+            form select {
+                width: 100%;
+                box-sizing: border-box;
+                font-size: 16px;
+                padding: 10px;
+            }
+
+            form-label {
+                font-size: 14px;
+            }
+
+            form button[type="submit"] {
+                width: 100%;
+                font-size: 16px;
+                padding: 12px;
+            }
+
+            table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+
+            .draw-block {
+                padding: 10px;
+            }
+
+            .draw-titlee {
+                font-size: 16px;
+                letter-spacing: 1px;
+            }
+
+            .bracket {
+                gap: 10px;
+                padding: 8px 0;
+            }
+
+            .round-col {
+                min-width: 140px;
+            }
+
+            .final-col {
+                min-width: 160px;
+            }
+
+            .athlete {
+                font-size: 12px;
+                padding: 5px 8px;
+            }
+
+            .athlete .school {
+                font-size: 10px;
+                padding: 1px 4px;
+            }
+        }
     </style>
 </head>
 
